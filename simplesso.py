@@ -8,6 +8,15 @@ def inserimentoC(n):
         
         c.append(int(get));
     return(c);
+def inserimentob(m):
+    print("------INSERIMENTO vettore b ------------------")
+    b = [];
+    for i in range(0,m):
+        get = input("inserisci");
+        
+        b.append(int(get));
+    b = np.array(b);
+    return(b);
 #--------------------------------------------------------------------------
 def inserimentoA():
     stop=False;
@@ -44,7 +53,7 @@ def inserimentoIndiciBasici(m):
         get = input("inserisci l'indice della variabile in base");
         xb.append(int(get));
     return(xb);
-def getRedCost(xb,A,c):
+def getRedCost(xb,A,c,b):
     B=[];
     cb=[];
     D=[];
@@ -74,15 +83,28 @@ def getRedCost(xb,A,c):
     print("\n cd=",cd)
 
     print("------------------------------")
-    return(cd-(cb*(np.linalg.inv(B)*D)));
+    xb=np.array(xb)[np.newaxis].T;
+    b=b[np.newaxis].T;
+    soluzione = np.linalg.inv(B)*b;
+    print ("-------SOLUZIONE---------")
+    
+    if(np.amin(soluzione)<0):
+        print("inammissibile")
+        print(soluzione);
+        return 1
+    print(soluzione);
+    redCost=cd-(cb*(np.linalg.inv(B)*D));
+    print("-------------------------- \n COEFFICIENTI DI COSTO RIDOTTO:",redCost);
+    return(redCost);
 
 A=inserimentoA();
-c=inserimentoC(np.shape(A)[1]);
+m,n=np.shape(A);
+c=inserimentoC(n);
+b=inserimentob(m);
 while(True):
     print("\n intervallo indici: [0,"+str(np.shape(A)[1]-1)+"]")
     xb=inserimentoIndiciBasici(np.shape(A)[0]);
-    redCost=getRedCost(xb,A,c);
-    print("COEFFICIENTI DI COSTO RIDOTTO:",redCost);
+    redCost=getRedCost(xb,A,c,b);
     if(np.amax(redCost)<=0):
         print("SOLUZIONE OTTIMALE, xb = ",xb);
     print("-------------------------");
